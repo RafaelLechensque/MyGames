@@ -7,6 +7,7 @@ namespace MyGames;
 
 public class Game1 : Game
 {
+
     private GraphicsDeviceManager _graphics;
     private SpriteBatch _spriteBatch;
 
@@ -45,8 +46,8 @@ public class Game1 : Game
 
 
         // Texture2D playerTexture = Content.Load<Texture2D>("sprites/player");
-        _ball = new Ball(GraphicsDevice, _graphics, new Point(25, 25), Color.Black);
-        _player = new Player(GraphicsDevice, _graphics, new Vector2(10f, (_graphics.PreferredBackBufferHeight - 150) / 2), Color.Black);
+        _ball = new Ball(Content, _graphics, new Point(25, 25), Color.Black);
+        _player = new Player(Content, _graphics, new Vector2(10f, (_graphics.PreferredBackBufferHeight - 150) / 2));
     }
 
     protected override void Update(GameTime gameTime)

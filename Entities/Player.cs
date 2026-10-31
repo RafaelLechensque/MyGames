@@ -1,5 +1,6 @@
 using System;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
@@ -15,13 +16,13 @@ public class Player
     private Random _random = new Random();
     private float _speed = 600f;
     private readonly Point _size = new Point(25, 150);
+    private Rectangle sourceRectangle = new Rectangle(0, 0, 25, 150);
 
 
-    public Player(GraphicsDevice graphicsDevice, GraphicsDeviceManager graphics, Vector2 position, Color color)
+    public Player(ContentManager content, GraphicsDeviceManager graphics, Vector2 position)
     {
-        _texture = new Texture2D(graphicsDevice, 1, 1);
+        _texture = content.Load<Texture2D>("spritesheet_pong");
         _graphics = graphics;
-        _texture.SetData(new[] { color });
         _position = position;
     }
 
@@ -42,16 +43,8 @@ public class Player
 
     public void Draw(SpriteBatch spriteBatch)
     {
-        spriteBatch.Draw(
-            _texture,
-            new Rectangle(
-                (int)_position.X,
-                (int)_position.Y,
-                _size.X,
-                _size.Y
-            ),
-            Color.Red
-        );
+        spriteBatch.Draw(_texture, _position, sourceRectangle, Color.White);
+
     }
 
 }
