@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Content;
 using MyGames.Entities;
+using System;
 
 namespace MyGames;
 
@@ -16,11 +17,6 @@ public class Game1 : Game
 
     private Ball _ball;
     private Player _player;
-    // private Texture2D _pixelTexture;
-    // private Vector2 _playerPosition;
-    // private readonly Point _playerSize = new Point(50, 50);
-    // private float _playerSpeed = 250f;
-    // Start do jogo, pirmeiras variaveis
     public Game1()
     {
         _graphics = new GraphicsDeviceManager(this);
@@ -66,9 +62,8 @@ public class Game1 : Game
         if (Keyboard.GetState().IsKeyDown(Keys.Escape))
             Exit();
 
-
-        _ball.Update(gameTime);
         _player.Update(gameTime);
+        _ball.Update(gameTime, _player.Bounds);
         base.Update(gameTime);
     }
 

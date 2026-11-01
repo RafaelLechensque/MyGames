@@ -10,6 +10,7 @@ public class Player
     private readonly Sprite _sprite;
     private readonly Point _gameBounds;
     private float _speed = 600f;
+    public Rectangle Bounds => _sprite.Bounds;
 
     public Player(Sprite sprite, Point gameBounds)
     {
@@ -22,17 +23,22 @@ public class Player
         float deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
         KeyboardState keyboard = Keyboard.GetState();
         Vector2 position = _sprite.Position;
-
         if (keyboard.IsKeyDown(Keys.Up) || keyboard.IsKeyDown(Keys.W))
             position.Y -= _speed * deltaTime;
 
         if (keyboard.IsKeyDown(Keys.Down) || keyboard.IsKeyDown(Keys.S))
             position.Y += _speed * deltaTime;
 
+        // if (keyboard.IsKeyDown(Keys.Right) || keyboard.IsKeyDown(Keys.D))
+        //     position.X += _speed * deltaTime;
+
+        // if (keyboard.IsKeyDown(Keys.Left) || keyboard.IsKeyDown(Keys.A))
+        //     position.X -= _speed * deltaTime;
+
         position.Y = MathHelper.Clamp(
             position.Y,
             0,
-            _gameBounds.Y - _sprite.Texture.Height);
+            _gameBounds.Y - _sprite.SourceRectangle.Height);
 
         _sprite.Position = position;
     }

@@ -15,6 +15,7 @@ public class Ball
     private Vector2 _direction = new Vector2(1f, 1f);
     private Random _random = new Random();
     private float _speed = 300f;
+    public Rectangle Bounds => _sprite.Bounds;
 
     public Ball(Sprite sprite, Point gameBounds)
     {
@@ -23,7 +24,7 @@ public class Ball
     }
 
 
-    public void Update(GameTime gameTime)
+    public void Update(GameTime gameTime, Rectangle playerBounds)
     {
         float deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
@@ -52,23 +53,23 @@ public class Ball
             if (_speed <= 800f) _speed *= 1.1f;
         }
 
-        // Colisão eixo X (Left/Right)
-        if (position.X <= 0 || position.X >= _gameBounds.X - _sprite.SourceRectangle.Width)
+        Rectangle ballBounds = new(
+            (int)position.X,
+            (int)position.Y,
+            _sprite.Bounds.Width,
+            _sprite.Bounds.Height);
+
+        if (_direction.X < 0 && ballBounds.Intersects(playerBounds))
         {
-            // 1. Trava a posição
-            position.X = MathHelper.Clamp(position.X, 0, _gameBounds.X - _sprite.SourceRectangle.Width);
-
-            // 2. Inverte o eixo X exato
+            position.X = playerBounds.Right;
             _direction.X *= -1;
-
-            // 3. Muda o ângulo alterando levemente o eixo oposto (Y)
-            _direction.Y += (float)(_random.NextDouble() * 0.4 - 0.2);
-
-            // 4. Normaliza
             _direction.Normalize();
-
-            // 5. Aumenta a velocidade
-            if (_speed <= 800f) _speed *= 1.1f;
+        }
+        else if (position.X >= _gameBounds.X - _sprite.SourceRectangle.Width)
+        {
+            position.X = _gameBounds.X - _sprite.SourceRectangle.Width;
+            _direction.X *= -1;
+            _direction.Normalize();
         }
 
         _sprite.Position = position;

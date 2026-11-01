@@ -12,7 +12,12 @@ public class Sprite
     public Color Color { get; set; } = Color.White;
     public float Rotation { get; set; } = 0f;
     public float Scale { get; set; } = 1f;
-    public Rectangle SourceRectangle;
+    public Rectangle SourceRectangle { get; set; }
+    public Rectangle Bounds => new(
+        (int)Position.X,
+        (int)Position.Y,
+        (int)(SourceRectangle.Width * Scale),
+        (int)(SourceRectangle.Height * Scale));
 
 
     public Sprite(Texture2D texture, Vector2 position)
