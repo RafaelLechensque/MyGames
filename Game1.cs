@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Content;
 using MyGames.Entities;
 
 namespace MyGames;
@@ -24,7 +25,6 @@ public class Game1 : Game
     {
         _graphics = new GraphicsDeviceManager(this);
         Content.RootDirectory = "Content";
-
         Window.Title = "My Game";
 
         _graphics.PreferredBackBufferWidth = GameBounds.X;
@@ -42,12 +42,23 @@ public class Game1 : Game
 
     protected override void LoadContent()
     {
+        Texture2D gameTexture = Content.Load<Texture2D>("spritesheet_pong");
         _spriteBatch = new SpriteBatch(GraphicsDevice);
 
+        Sprite ballSprite = new Sprite(
+            gameTexture,
+            new Vector2((GameBounds.X - 25) / 2, (GameBounds.Y - 25) / 2),
+            new Rectangle(25, 0, 25, 25)
+        );
 
-        // Texture2D playerTexture = Content.Load<Texture2D>("sprites/player");
-        _ball = new Ball(Content, _graphics, new Point(25, 25), Color.Black);
-        _player = new Player(Content, _graphics, new Vector2(10f, (_graphics.PreferredBackBufferHeight - 150) / 2));
+        Sprite playerSprite = new Sprite(
+            gameTexture,
+            new Vector2(10f, (_graphics.PreferredBackBufferHeight - 150) / 2),
+            new Rectangle(0, 0, 25, 150)
+        );
+
+        _ball = new Ball(ballSprite, GameBounds);
+        _player = new Player(playerSprite, GameBounds);
     }
 
     protected override void Update(GameTime gameTime)
@@ -55,7 +66,7 @@ public class Game1 : Game
         if (Keyboard.GetState().IsKeyDown(Keys.Escape))
             Exit();
 
-        // TODO: Add your update logic here
+
         _ball.Update(gameTime);
         _player.Update(gameTime);
         base.Update(gameTime);

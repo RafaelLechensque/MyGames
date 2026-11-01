@@ -9,25 +9,17 @@ namespace MyGames.Entities;
 
 public class Ball
 {
-    private GraphicsDeviceManager _graphics;
 
-    private Texture2D _texture;
-    private Vector2 _position;
+    private readonly Sprite _sprite;
+    private readonly Point _gameBounds;
     private Vector2 _direction = new Vector2(1f, 1f);
     private Random _random = new Random();
-    private float _speed = 200f;
-    private Rectangle sourceRectangle;
-    private readonly Point _size;
+    private float _speed = 300f;
 
-    public Ball(ContentManager content, GraphicsDeviceManager graphics, Point size, Color color)
+    public Ball(Sprite sprite, Point gameBounds)
     {
-
-        _texture = content.Load<Texture2D>("spritesheet_pong");
-
-        _graphics = graphics;
-        _size = size;
-        sourceRectangle = new Rectangle(25, 0, size.X, size.Y);
-        _position = new Vector2((_graphics.PreferredBackBufferWidth - size.X) / 2, (_graphics.PreferredBackBufferHeight - size.Y) / 2);
+        _sprite = sprite;
+        _gameBounds = gameBounds;
     }
 
 
@@ -35,14 +27,16 @@ public class Ball
     {
         float deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-        _position.Y += _direction.Y * deltaTime * _speed;
-        _position.X += _direction.X * deltaTime * _speed;
+        Vector2 position = _sprite.Position;
+
+        position.Y += _direction.Y * deltaTime * _speed;
+        position.X += _direction.X * deltaTime * _speed;
 
         // Colisão eixo Y (Top/Bottom)
-        if (_position.Y <= 0 || _position.Y >= _graphics.PreferredBackBufferHeight - _size.Y)
+        if (position.Y <= 0 || position.Y >= _gameBounds.Y - _sprite.SourceRectangle.Height)
         {
             // 1. Trava a posição para a bola não ficar presa (vazar) na borda
-            _position.Y = MathHelper.Clamp(_position.Y, 0, _graphics.PreferredBackBufferHeight - _size.Y);
+            position.Y = MathHelper.Clamp(position.Y, 0, _gameBounds.Y - _sprite.SourceRectangle.Height);
 
             // 2. Inverte o eixo Y exato
             _direction.Y *= -1;
@@ -59,10 +53,10 @@ public class Ball
         }
 
         // Colisão eixo X (Left/Right)
-        if (_position.X <= 0 || _position.X >= _graphics.PreferredBackBufferWidth - _size.X)
+        if (position.X <= 0 || position.X >= _gameBounds.X - _sprite.SourceRectangle.Width)
         {
             // 1. Trava a posição
-            _position.X = MathHelper.Clamp(_position.X, 0, _graphics.PreferredBackBufferWidth - _size.X);
+            position.X = MathHelper.Clamp(position.X, 0, _gameBounds.X - _sprite.SourceRectangle.Width);
 
             // 2. Inverte o eixo X exato
             _direction.X *= -1;
@@ -77,11 +71,13 @@ public class Ball
             if (_speed <= 800f) _speed *= 1.1f;
         }
 
+        _sprite.Position = position;
+
         // Console.WriteLine($"Velocidade: {_speed} | Direção: X={_direction.X:0.00}, Y={_direction.Y:0.00}");
     }
 
     public void Draw(SpriteBatch spriteBatch)
     {
-        spriteBatch.Draw(_texture, _position, sourceRectangle, Color.White);
+        _sprite.Draw(spriteBatch);
     }
 }
